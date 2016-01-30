@@ -1,0 +1,71 @@
+package com.giovanni.contest_test;
+
+dialect "java"
+
+rule "New entry policy criteria for contest Partnership Distribution Awards Night Event"
+	date-effective "01-Jan-2016"
+	date-expires "01-Dec-2016"
+	ruleflow-group "contest_pd_fsc"
+when
+	$contestMaster : ContestMaster( channel == "PD", reviewingFlag == "1", contestCode == "C0001") // from master contest
+    $policy : Policy( billingChannel == $contestMaster.getChannel())
+	$agent : Agent(agentNumber == $policy.getAgentNumber())
+	//get contest parameter from database
+	$contestParameter1 : ContestParameter( contestCode == $contestMaster.getContestCode(),
+	paramCode == "PRM01", $agent.getAgentType() == $contestParameter1.getValue())
+	$contestParameter2 : ContestParameter( contestCode == $contestMaster.getContestCode(),
+	paramCode == "PRM02", $policy.getProductCode() == $contestParameter2.getValue())
+then
+	System.out.println("rule contest Partnership Distribution Awards Night Event fired !");
+	ContestDetail cd = new ContestDetail();
+	cd.setContestCode($contestMaster.getContestCode());
+	cd.setPolicyNo($policy.getPolicyNo());
+	cd.setAgentNumber($policy.getAgentNumber());
+	cd.setApi($policy.getInstallmentPremium());
+	insertLogical(cd);
+end
+
+rule "New entry policy criteria for contest Premier Club Gold"
+	date-effective "01-Jan-2016"
+	date-expires "01-Jun-2016"
+	ruleflow-group "contest_pd_fsc"
+when
+	$contestMaster : ContestMaster( channel == "PD", reviewingFlag == "1", contestCode == "C0002" ) // from master contest
+    $policy : Policy( billingChannel == $contestMaster.getChannel())
+	$agent : Agent(agentNumber == $policy.getAgentNumber())
+	//get contest parameter from database
+	$contestParameter1 : ContestParameter( contestCode == $contestMaster.getContestCode(),
+	paramCode == "PRM01", $agent.getAgentType() == $contestParameter1.getValue())
+	$contestParameter2 : ContestParameter( contestCode == $contestMaster.getContestCode(),
+	paramCode == "PRM02", $policy.getProductCode() == $contestParameter2.getValue())
+then
+	System.out.println("rule contest Premier Club Gold fired !");
+	ContestDetail cd = new ContestDetail();
+	cd.setContestCode($contestMaster.getContestCode());
+	cd.setPolicyNo($policy.getPolicyNo());
+	cd.setAgentNumber($policy.getAgentNumber());
+	cd.setApi($policy.getInstallmentPremium());
+	insertLogical(cd);
+end
+
+rule "New entry policy criteria for contest Premier Club Gold Test"
+	date-effective "01-Jan-2017"
+	date-expires "01-Jun-2017"
+	ruleflow-group "contest_pd_fsc"
+when
+	$policy : Policy( billingChannel == "PD")
+	$contestMaster : ContestMaster( channel == "PD", reviewingFlag == "1" )
+	Agent( agentType == "LEADER", agentNumber == $policy.getAgentNumber())
+then
+	System.out.println("rule contest Premier Club Gold fired !");
+	ContestDetail cd = new ContestDetail();
+	cd.setContestCode($contestMaster.getContestCode());
+	cd.setPolicyNo($policy.getPolicyNo());	
+	cd.setAgentNumber($policy.getAgentNumber());
+	cd.setApi($policy.getInstallmentPremium());
+	insertLogical(cd);
+end
+
+query "getObjectsOfContestDetail"
+    $result: ContestDetail();
+end
